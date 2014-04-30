@@ -1,0 +1,16 @@
+language: c++
+
+before_install:
+  - sudo apt-get -y install build-essential libopendbx1-dev libopendbx1-sqlite3 libluajit-5.1-dev
+  - git submodule add https://github.com/Theintercooler/luvit.git libraries/luvit
+  - (cd libraries/luvit && git submodule add https://github.com/Theintercooler/libuv.git libraries/uv)
+
+script:
+  - (mkdir cmakebuild && cd cmakebuild && cmake -DHAVE_LOCAL_LIBUV=1 -DHAVE_LOCAL_LUVIT=1 .. && make -j5 && cd .. && rm -rf cmakebuild)
+
+compiler:
+  - clang
+  - gcc
+
+notifications:
+  webhooks: http://n.tkte.ch/h/2668/F4L3cSNd6k64uywBGv_DORDO
