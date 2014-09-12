@@ -54,7 +54,7 @@ else()
     message(FATAL_ERROR "Unsupported OS: ${CMAKE_SYSTEM_NAME}")
 endif()
 
-set(LUAPP_BINARY_NAME luapp_${LUAPP_PLATFORM_BIN}_${LUAPP_TARGET_ARCH})
+set(LUAPP_BINARY_NAME luapp_${LUAPP_PLATFORM_BIN}_${LUAPP_TARGET_ARCH} CACHE INTERNAL "the name of the luapp executable")
 add_executable(${LUAPP_BINARY_NAME} ${LUAPP_SOURCES})
 
 target_link_libraries(${LUAPP_BINARY_NAME}
