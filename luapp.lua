@@ -57,28 +57,37 @@ else
             loadFunction(newArgs[0])
         end, traceback))
     else
+        local function runString(str)
+            local func = loadstring("p("..str..")")
+            if not func then
+                func = assert(loadstring(str))
+            end
+            func()
+        end
+        
         local isSilent = flags["-s"] == "-s"
         p = origionalP -- Always verbose
-        if not isSilent then
-            process.stdout:write("lua>");
-        end
-        process.stdin:on("data", function(data)
-            local suc, err = pcall(function() 
-                local func = loadstring("p("..data..")")
-                if not func then
-                    func = assert(loadstring(data))
-                end
-                func()
-            end)
-            
-            if not suc then
-                process.stderr:write(err.."\n")
-            end
+        if #args > 0 then
+            runString(table.concat(args, " "))
+        else
             if not isSilent then
                 process.stdout:write("lua>");
             end
-        end)
-        process.stdin:readStart()
+
+            process.stdin:on("data", function(data)
+                local suc, err = pcall(function() 
+                    runString(data)
+                end)
+                
+                if not suc then
+                    process.stderr:write(err.."\n")
+                end
+                if not isSilent then
+                    process.stdout:write("lua>");
+                end
+            end)
+            process.stdin:readStart()
+        end
     end
 end
 
