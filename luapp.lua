@@ -32,7 +32,7 @@ else
             end
         end
     end
-    
+
     if flags["-v"] then
         p = origionalP
     end
@@ -50,7 +50,7 @@ else
         for k, v in ipairs(args) do
             newArgs[k-1] = v
         end
-        
+
         process.argv = newArgs
 
         assert(xpcall(function()
@@ -64,9 +64,10 @@ else
             end
             func()
         end
-        
+
         local isSilent = flags["-s"] == "-s"
         p = origionalP -- Always verbose
+
         if #args > 0 then
             runString(table.concat(args, " "))
         else
@@ -78,7 +79,7 @@ else
                 local suc, err = pcall(function() 
                     runString(data)
                 end)
-                
+
                 if not suc then
                     process.stderr:write(err.."\n")
                 end
@@ -94,4 +95,6 @@ end
 -- Start the event loop
 native.run()
 
-process.exit(process.exitCode or 0)
+if process.exitCode and process.exitCode ~= 0 then
+    process.exit(process.exitCode or 0)
+end
