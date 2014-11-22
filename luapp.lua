@@ -3,12 +3,14 @@ local native = require "uv_native"
 local process = require "luvit.process"
 local traceback = require "debug".traceback
 local table = require "table"
+local jit = require "jit"
 
 local origionalP = p
+local verbose = false
 p = function() end
 
 local function printUsage()
-    process.stderr:write(("Usage: %s [-i | -r | -d] [-v] [-s] [--] <script file> [<Arguments>...]\n"):format(process.argv[0]))
+    process.stderr:write(("Usage: %s [-i | -r | -d] [-j0 | -j1] [-o0] [-v] [-s] [--] <script file> [<Arguments>...]\n"):format(process.argv[0]))
     process.exit(1)
 end
 
@@ -34,7 +36,27 @@ else
     end
 
     if flags["-v"] then
+        verbose = true
         p = origionalP
+    end
+
+    if flags["-j0"] then
+        jit.off()
+        if verbose then
+            print "JIT compilation disabled"
+        end
+    elseif flags["-j1"] then
+        jit.on()
+        if verbose then
+            print "JIT compilation enabled"
+        end
+    end
+
+    if flags["-o0"] then
+        jit.opt.start(0)
+        if verbose then
+            print "Disabled optimailisations"
+        end
     end
 
     local loadFunction = require
