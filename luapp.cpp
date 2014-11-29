@@ -68,5 +68,7 @@ int main(int argc, char *argv[])
 
     lua_close(L);
     uv_loop_close(loop);
+    L = NULL;
+    loop = NULL;
     return 0;
 }
